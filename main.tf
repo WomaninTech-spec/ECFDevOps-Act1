@@ -78,6 +78,31 @@ resource "aws_emr_cluster" "spark_cluster" {
   }
 }
 
+resource "aws_security_group" "my_security_group" {
+  name        = "my-security-group"
+  description = "Security group for my application"
+
+  vpc_id = "vpc-0f62caa1158f14445"
+
+  // Règles entrantes
+  // Par exemple, permettre le trafic SSH
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  // Règles sortantes
+  // Par exemple, permettre tout le trafic sortant
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 #Create the MongoDB Cluster with Document DB
   resource "aws_docdb_cluster" "docdb" {
     cluster_identifier = var.cluster_identifier
@@ -98,8 +123,4 @@ resource "aws_docdb_cluster_instance" "docdb_instances" {
 }
 # activité 1 deployer un cluster Apache / spark = 2 machines mini pour la hte dispo (load balancing)
 # sur aws = serverless documentDB
-# conseil : spliter le main.tf pour cacher le access key
 # lancer EMR
-# comment lancer sur GIT
-# regarder commande ctrl C pour annuler sur aws + terraform destroy
-# key pairs
